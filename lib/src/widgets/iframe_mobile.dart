@@ -28,6 +28,7 @@ class IframeContentElement extends ReplacedElement {
   @override
   Widget toWidget(RenderContext context) {
     final sandboxMode = attributes["sandbox"];
+
     return Container(
       width: width ?? (height ?? 150) * 2,
       height: height ?? (width ?? 300) / 2,
@@ -38,21 +39,22 @@ class IframeContentElement extends ReplacedElement {
           initialUrl: src,
           key: key,
           javascriptMode: sandboxMode == null || sandboxMode == "allow-scripts"
-            ? webview.JavascriptMode.unrestricted
-            : webview.JavascriptMode.disabled,
-        navigationDelegate: (request) async {
-          final result = await navigationDelegate!(NavigationRequest(
-            url: request.url,
-            isForMainFrame: request.isForMainFrame,
-          ));
-          if (result == NavigationDecision.prevent) {
-            return webview.NavigationDecision.prevent;
-          } else {
-            return webview.NavigationDecision.navigate;
-          }
-        },
+              ? webview.JavascriptMode.unrestricted
+              : webview.JavascriptMode.disabled,
+          navigationDelegate: (request) async {
+            final result = await navigationDelegate!(NavigationRequest(
+              url: request.url,
+              isForMainFrame: request.isForMainFrame,
+            ));
+            if (result == NavigationDecision.prevent) {
+              return webview.NavigationDecision.prevent;
+            } else {
+              return webview.NavigationDecision.navigate;
+            }
+          },
           gestureRecognizers: {
-            Factory<VerticalDragGestureRecognizer>(() => VerticalDragGestureRecognizer())
+            Factory<VerticalDragGestureRecognizer>(
+                () => VerticalDragGestureRecognizer())
           },
         ),
       ),
